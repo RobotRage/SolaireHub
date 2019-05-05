@@ -39,61 +39,11 @@ void main(array<String^>^ args)
 }
 void timer()
 {
-	//DWORD LocalTeam = 0;
-	//DWORD GlowObject = 0;
-	//DWORD LocalPlayer = 0;
-	//DWORD Entity = 0;
-	//DWORD EntityList = 0;
-	//DWORD Health = 0;
-	//DWORD IsDormant = 0;
-	//DWORD GlowIndex = 0;
-	//DWORD TeamNum = 0;
-	//DWORD ClassID = 0;
-
-	//for (int i = 0; i < 64; i++)
-	//{
-
-	//	ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(fProcess.__dwordClient + 0x517B700), &GlowObject, sizeof(int), NULL);
-	//	ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(GlowObject + 0x38 * i), &Entity, sizeof(int), NULL);
-	//	ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(Entity + 0x8), &ClassID, sizeof(int), NULL); // Multilevel Pointer Reading ClassID
-	//	ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(ClassID + 0x8), &ClassID, sizeof(int), NULL);
-	//	ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(ClassID + 0x1), &ClassID, sizeof(int), NULL);
-	//	ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(ClassID + 0x14), &ClassID, sizeof(int), NULL);
-
-	//		if (ClassID == 108)
-	//		{
-	//			starttimer = true;
-	//		}
-	//}
+	
 }
 void  esploop()
 {	
-/*
-		while (!pTools::findProcess("csgo.exe")) Sleep(250);
-		do {
-			__client = pTools::getModule("client_panorama.dll");
-			__engine = pTools::getModule("engine.dll");
-			Sleep(250);
-		} while (!__client.dwBase || !__engine.dwBase);
 
-
-	while (true)
-	{
-		if (espbool)
-		{
-			Sleep(espdelay);
-			if (!pTools::findProcess("csgo.exe")) break;
-			LocalPlayer = RPM<DWORD>(__client.dwBase + dwLocalPlayer);
-			GlowObjectManager = RPM<DWORD>(__client.dwBase + dwGlowObjectManager);
-			EntityList = __client.dwBase + dwEntityList;
-			if (LocalPlayer) {
-				for (int i = 0; i <64; i++) {
-					ReadAllEntityInformation();
-					Glow::Run();
-				}
-			}
-		}
-	}*/
 }
 DWORD LocalPlayerBase = hazedumper::signatures::dwLocalPlayer;
 DWORD Crosshair = hazedumper::netvars::m_iCrosshairId;
@@ -190,20 +140,18 @@ DWORD getPlayer()
 {
 	D3DXVECTOR3 w2sHead;
 	DWORD plrToAim = NULL;
-	double lowestDist = 20;//100;
+	double lowestDist = 50;
 
 	for (int i = 1; i <= 32; i++)
 	{
-		DWORD Entity;
+	DWORD Entity;
 	DWORD ClassID;
 	DWORD TeamNum;
 	DWORD GlowObject = 0;
 	DWORD localteam;
-
-
 	DWORD base;
-	ReadProcessMemory(fProcess.__HandleProcess, (BYTE*)(fProcess.__dwordClient + hazedumper::signatures::dwEntityList + (i * 0x10)), &base, sizeof(base), NULL);
 
+	ReadProcessMemory(fProcess.__HandleProcess, (BYTE*)(fProcess.__dwordClient + hazedumper::signatures::dwEntityList + (i * 0x10)), &base, sizeof(base), NULL);
 	WorldToScreen(getbone(base), w2sHead, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CXSCREEN));
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(PlayerBase + 0xF4), &localteam, sizeof(localteam), NULL);
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(base + 0x8), &ClassID, sizeof(int), NULL);
@@ -216,11 +164,10 @@ DWORD getPlayer()
 		bool valid;
 		ReadProcessMemory(fProcess.__HandleProcess, (LPVOID)(base + 0xE9), &valid, sizeof(valid), NULL);
 
-
 		DWORD hp;
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(base + hazedumper::netvars::m_iHealth), &hp, sizeof(hp), NULL);
 
-		if (dist < lowestDist && ClassID == 38 && TeamNum != localteam && hp > 0)
+		if (dist < lowestDist && ClassID == 40 && TeamNum != localteam && hp > 0)
 		{
 			lowestDist = dist;
 			plrToAim = base;
@@ -228,6 +175,17 @@ DWORD getPlayer()
 	}
 	return plrToAim;
 }
+/*
+void MouseMove(int x, int y)
+{
+	INPUT  Input = { 0 };
+	Input.type = INPUT_MOUSE;
+	Input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
+	Input.mi.dx = x;
+	Input.mi.dy = y;
+	::SendInput(1, &Input, sizeof(INPUT));
+}
+*/
 bool spotted(DWORD playerBase)
 {
 	bool temp;
@@ -235,20 +193,17 @@ bool spotted(DWORD playerBase)
 	ReadProcessMemory(fProcess.__HandleProcess, (LPVOID)(playerBase + hazedumper::netvars::m_bSpotted), &temp, sizeof(temp), NULL);
 	return temp;
 }
+
 void MouseMove(int x, int y)
 {
-
 	INPUT Input = { 0 };
 	Input.type = INPUT_MOUSE;
 	Input.mi.dwFlags = MOUSEEVENTF_MOVE;
 	Input.mi.dx = x;
 	Input.mi.dy = y;
 	::SendInput(1, &Input, sizeof(INPUT));
-
-
-
-
 }
+
 void aimbot(DWORD playerToAimAt)
 {
 	D3DXVECTOR3 w2sHead;
@@ -262,12 +217,13 @@ void aimbot(DWORD playerToAimAt)
 	if (spotted(playerToAimAt) == 1)
 	{
 		//aimbotdist++;
-			if (headX > -aimbotdist && headX <aimbotdist && headY > -aimbotdist && headY < aimbotdist)
-			{
+			//if (headX > -aimbotdist && headX <aimbotdist && headY > -aimbotdist && headY < aimbotdist)
+		//	{
 				// mouse_event(0, headX, headY, 0, 0);
 				MouseMove(headX, headY);
+
 				//SetCursorPos(headX, headY);
-			}
+		//	}
 			POINT mouse;
 			GetCursorPos(&mouse);
 		if (shootonhead)
@@ -399,7 +355,7 @@ void trigger()
 									
 					if (chicken)
 					{
-						if (ClassID == 34)
+						if (ClassID == 36)
 						{
 							WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(GlowObject + 0x38 * i + 0x4), &EntGlow, sizeof(EntGlow), NULL);
 						}
@@ -407,7 +363,7 @@ void trigger()
 
 					if (espbool)
 					{
-						if (ClassID == 38)
+						if (ClassID == 40)
 						{
 							if (LocalTeam != TeamNum)
 							{
@@ -425,7 +381,7 @@ void trigger()
 							WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(GlowObject + 0x38 * i + 0x4), &EntGlow, sizeof(EntGlow), NULL);
 							Sleep(espdelay);
 						}
-						if (ClassID >= 228 && ClassID <= 268)
+						if (ClassID >= 231 && ClassID <= 272)
 						{
 							WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(GlowObject + 0x38 * i + 0x4), &EntGlow, sizeof(EntGlow), NULL);
 							Sleep(espdelay);
@@ -433,7 +389,7 @@ void trigger()
 					}
 					if (bombglowbool)
 					{
-						if (ClassID == 32)
+						if (ClassID == 34)
 						{
 							WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(GlowObject + 0x38 * i + 0x4), &EntGlow, sizeof(EntGlow), NULL);
 						}			
@@ -442,7 +398,7 @@ void trigger()
 							WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(GlowObject + 0x38 * i + 0x4), &EntGlow, sizeof(EntGlow), NULL);
 						}
 					}
-					if (ClassID == 126)
+					if (ClassID == 128)
 					{
 						starttimer = true;
 					}
