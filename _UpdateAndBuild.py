@@ -84,7 +84,7 @@ print("Compile started...")
 
 buildfile = []
 buildfile.append("@echo off")
-buildfile.append('\"C:\Program Files (x86)\Microsoft Visual Studio\\2017\Community\Common7\IDE\devenv.exe\" SolaireHub.sln /Build')
+buildfile.append('\"C:\Program Files (x86)\Microsoft Visual Studio\\2017\Community\Common7\IDE\devenv.exe\" SolaireHub.sln /Build "Debug|x86"')
 open('tmpbuild.bat','w').write("")
 with open('tmpbuild.bat', 'w') as f:
     for item in buildfile:
