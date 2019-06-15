@@ -94,6 +94,7 @@ time.sleep(0.3)
 		
 os.system('tmpbuild.bat')
 if not (os.path.isfile("Debug\SolaireHub.exe")):
+	os.remove("tmpbuild.bat")
 	failed("Build failed\nPlease send the Visual Studio errors to Solaire")
 else:
 	print("Bulid complete!")
