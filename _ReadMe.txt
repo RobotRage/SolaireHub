@@ -4,6 +4,12 @@ This Tool was made by Solaire.
 2- run SolaireHub
 
 ------------------------
+V 1.9.4
+-Added Aimbot Snap Contol 
+-Fixed AimbotDistance 
+-Added EnemyHP
+-Minor bug fixes
+------------------------
 V 1.7.3
 -Added Aimbot
 -Aimbot settings
