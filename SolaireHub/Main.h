@@ -4,7 +4,8 @@
 #include <tchar.h>
 #include <string>
 #include <windows.system.threading.h>
-
+#include "vector"
+std::vector<int> HPVector;
 void timer();
 void esploop();
 void trigger();
@@ -19,7 +20,8 @@ bool aimbotbool = false;
 bool legit = false;
 int triggedelay = 0;
 int espdelay = 0;
-int aimbotdist = 10;
+int aimbotdist = 15;
+int aimbotSnap = 2;
 int lagdelay = 0;
 int lagdelayjump = 0;
 bool onjump = false;
@@ -27,7 +29,7 @@ int MaxEntities;
 bool chicken = false;
 bool shootonhead = false;
 bool shortcuts = false;
-
+std::string HpVals;
 int bombtimer = 40;
 bool starttimer = false;
 
@@ -166,7 +168,37 @@ private: System::Windows::Forms::Label^  label60;
 private: System::Windows::Forms::TextBox^  textBox5;
 private: System::Windows::Forms::CheckBox^  checkBox5;
 private: System::Windows::Forms::Label^  label61;
+private: System::Windows::Forms::TextBox^  textBox6;
+private: System::Windows::Forms::RichTextBox^  richTextBox4;
 private: System::Windows::Forms::Label^  label62;
+private: System::Windows::Forms::Label^  label63;
+private: System::Windows::Forms::Label^  label64;
+private: System::Windows::Forms::Label^  label65;
+private: System::Windows::Forms::Label^  label66;
+private: System::Windows::Forms::Label^  label67;
+private: System::Windows::Forms::Label^  label68;
+private: System::Windows::Forms::Label^  label69;
+private: System::Windows::Forms::Label^  label70;
+private: System::Windows::Forms::Label^  label71;
+private: System::Windows::Forms::Label^  label72;
+private: System::Windows::Forms::Label^  label73;
+private: System::Windows::Forms::Label^  label74;
+private: System::Windows::Forms::Label^  label75;
+private: System::Windows::Forms::Label^  label76;
+private: System::Windows::Forms::Label^  label77;
+private: System::Windows::Forms::Label^  label78;
+private: System::Windows::Forms::Label^  label79;
+private: System::Windows::Forms::Label^  label80;
+private: System::Windows::Forms::Label^  label81;
+private: System::Windows::Forms::Label^  label82;
+private: System::Windows::Forms::Label^  label83;
+private: System::Windows::Forms::Label^  label84;
+private: System::Windows::Forms::Label^  label85;
+private: System::Windows::Forms::Label^  label87;
+private: System::Windows::Forms::Label^  label88;
+private: System::Windows::Forms::Label^  label86;
+
+
 
 	private: System::ComponentModel::IContainer^  components;
 	protected:
@@ -278,7 +310,35 @@ private: System::Windows::Forms::Label^  label62;
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 			this->checkBox5 = (gcnew System::Windows::Forms::CheckBox());
 			this->label61 = (gcnew System::Windows::Forms::Label());
+			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
+			this->richTextBox4 = (gcnew System::Windows::Forms::RichTextBox());
 			this->label62 = (gcnew System::Windows::Forms::Label());
+			this->label63 = (gcnew System::Windows::Forms::Label());
+			this->label64 = (gcnew System::Windows::Forms::Label());
+			this->label65 = (gcnew System::Windows::Forms::Label());
+			this->label66 = (gcnew System::Windows::Forms::Label());
+			this->label67 = (gcnew System::Windows::Forms::Label());
+			this->label68 = (gcnew System::Windows::Forms::Label());
+			this->label69 = (gcnew System::Windows::Forms::Label());
+			this->label70 = (gcnew System::Windows::Forms::Label());
+			this->label71 = (gcnew System::Windows::Forms::Label());
+			this->label72 = (gcnew System::Windows::Forms::Label());
+			this->label73 = (gcnew System::Windows::Forms::Label());
+			this->label74 = (gcnew System::Windows::Forms::Label());
+			this->label75 = (gcnew System::Windows::Forms::Label());
+			this->label76 = (gcnew System::Windows::Forms::Label());
+			this->label77 = (gcnew System::Windows::Forms::Label());
+			this->label78 = (gcnew System::Windows::Forms::Label());
+			this->label79 = (gcnew System::Windows::Forms::Label());
+			this->label80 = (gcnew System::Windows::Forms::Label());
+			this->label81 = (gcnew System::Windows::Forms::Label());
+			this->label82 = (gcnew System::Windows::Forms::Label());
+			this->label83 = (gcnew System::Windows::Forms::Label());
+			this->label84 = (gcnew System::Windows::Forms::Label());
+			this->label85 = (gcnew System::Windows::Forms::Label());
+			this->label87 = (gcnew System::Windows::Forms::Label());
+			this->label88 = (gcnew System::Windows::Forms::Label());
+			this->label86 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// trig
@@ -1161,21 +1221,305 @@ private: System::Windows::Forms::Label^  label62;
 			// 
 			this->label61->AutoSize = true;
 			this->label61->ForeColor = System::Drawing::SystemColors::ButtonFace;
-			this->label61->Location = System::Drawing::Point(53, 293);
+			this->label61->Location = System::Drawing::Point(9, 295);
 			this->label61->Name = L"label61";
-			this->label61->Size = System::Drawing::Size(83, 13);
+			this->label61->Size = System::Drawing::Size(71, 13);
 			this->label61->TabIndex = 90;
-			this->label61->Text = L"15-20 = legit bot";
+			this->label61->Text = L"Aim Bot Snap";
+			// 
+			// textBox6
+			// 
+			this->textBox6->Location = System::Drawing::Point(132, 293);
+			this->textBox6->Name = L"textBox6";
+			this->textBox6->Size = System::Drawing::Size(38, 20);
+			this->textBox6->TabIndex = 91;
+			this->textBox6->Text = L"2";
+			this->textBox6->TextChanged += gcnew System::EventHandler(this, &Main::textBox6_TextChanged);
+			// 
+			// richTextBox4
+			// 
+			this->richTextBox4->Location = System::Drawing::Point(978, 56);
+			this->richTextBox4->Name = L"richTextBox4";
+			this->richTextBox4->ReadOnly = true;
+			this->richTextBox4->ScrollBars = System::Windows::Forms::RichTextBoxScrollBars::Vertical;
+			this->richTextBox4->Size = System::Drawing::Size(99, 278);
+			this->richTextBox4->TabIndex = 92;
+			this->richTextBox4->Text = L"";
+			this->richTextBox4->TextChanged += gcnew System::EventHandler(this, &Main::richTextBox4_TextChanged);
 			// 
 			// label62
 			// 
 			this->label62->AutoSize = true;
 			this->label62->ForeColor = System::Drawing::SystemColors::ButtonFace;
-			this->label62->Location = System::Drawing::Point(53, 309);
+			this->label62->Location = System::Drawing::Point(954, 5);
 			this->label62->Name = L"label62";
-			this->label62->Size = System::Drawing::Size(88, 13);
-			this->label62->TabIndex = 91;
-			this->label62->Text = L"5000 = max snap";
+			this->label62->Size = System::Drawing::Size(9, 13);
+			this->label62->TabIndex = 93;
+			this->label62->Text = L"|";
+			// 
+			// label63
+			// 
+			this->label63->AutoSize = true;
+			this->label63->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label63->Location = System::Drawing::Point(954, 18);
+			this->label63->Name = L"label63";
+			this->label63->Size = System::Drawing::Size(9, 13);
+			this->label63->TabIndex = 94;
+			this->label63->Text = L"|";
+			// 
+			// label64
+			// 
+			this->label64->AutoSize = true;
+			this->label64->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label64->Location = System::Drawing::Point(954, 45);
+			this->label64->Name = L"label64";
+			this->label64->Size = System::Drawing::Size(9, 13);
+			this->label64->TabIndex = 96;
+			this->label64->Text = L"|";
+			this->label64->Click += gcnew System::EventHandler(this, &Main::label64_Click);
+			// 
+			// label65
+			// 
+			this->label65->AutoSize = true;
+			this->label65->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label65->Location = System::Drawing::Point(954, 32);
+			this->label65->Name = L"label65";
+			this->label65->Size = System::Drawing::Size(9, 13);
+			this->label65->TabIndex = 95;
+			this->label65->Text = L"|";
+			this->label65->Click += gcnew System::EventHandler(this, &Main::label65_Click);
+			// 
+			// label66
+			// 
+			this->label66->AutoSize = true;
+			this->label66->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label66->Location = System::Drawing::Point(954, 69);
+			this->label66->Name = L"label66";
+			this->label66->Size = System::Drawing::Size(9, 13);
+			this->label66->TabIndex = 98;
+			this->label66->Text = L"|";
+			this->label66->Click += gcnew System::EventHandler(this, &Main::label66_Click);
+			// 
+			// label67
+			// 
+			this->label67->AutoSize = true;
+			this->label67->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label67->Location = System::Drawing::Point(954, 56);
+			this->label67->Name = L"label67";
+			this->label67->Size = System::Drawing::Size(9, 13);
+			this->label67->TabIndex = 97;
+			this->label67->Text = L"|";
+			this->label67->Click += gcnew System::EventHandler(this, &Main::label67_Click);
+			// 
+			// label68
+			// 
+			this->label68->AutoSize = true;
+			this->label68->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label68->Location = System::Drawing::Point(954, 146);
+			this->label68->Name = L"label68";
+			this->label68->Size = System::Drawing::Size(9, 13);
+			this->label68->TabIndex = 104;
+			this->label68->Text = L"|";
+			// 
+			// label69
+			// 
+			this->label69->AutoSize = true;
+			this->label69->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label69->Location = System::Drawing::Point(954, 133);
+			this->label69->Name = L"label69";
+			this->label69->Size = System::Drawing::Size(9, 13);
+			this->label69->TabIndex = 103;
+			this->label69->Text = L"|";
+			// 
+			// label70
+			// 
+			this->label70->AutoSize = true;
+			this->label70->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label70->Location = System::Drawing::Point(954, 122);
+			this->label70->Name = L"label70";
+			this->label70->Size = System::Drawing::Size(9, 13);
+			this->label70->TabIndex = 102;
+			this->label70->Text = L"|";
+			// 
+			// label71
+			// 
+			this->label71->AutoSize = true;
+			this->label71->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label71->Location = System::Drawing::Point(954, 109);
+			this->label71->Name = L"label71";
+			this->label71->Size = System::Drawing::Size(9, 13);
+			this->label71->TabIndex = 101;
+			this->label71->Text = L"|";
+			// 
+			// label72
+			// 
+			this->label72->AutoSize = true;
+			this->label72->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label72->Location = System::Drawing::Point(954, 95);
+			this->label72->Name = L"label72";
+			this->label72->Size = System::Drawing::Size(9, 13);
+			this->label72->TabIndex = 100;
+			this->label72->Text = L"|";
+			// 
+			// label73
+			// 
+			this->label73->AutoSize = true;
+			this->label73->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label73->Location = System::Drawing::Point(954, 82);
+			this->label73->Name = L"label73";
+			this->label73->Size = System::Drawing::Size(9, 13);
+			this->label73->TabIndex = 99;
+			this->label73->Text = L"|";
+			// 
+			// label74
+			// 
+			this->label74->AutoSize = true;
+			this->label74->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label74->Location = System::Drawing::Point(954, 223);
+			this->label74->Name = L"label74";
+			this->label74->Size = System::Drawing::Size(9, 13);
+			this->label74->TabIndex = 110;
+			this->label74->Text = L"|";
+			// 
+			// label75
+			// 
+			this->label75->AutoSize = true;
+			this->label75->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label75->Location = System::Drawing::Point(954, 210);
+			this->label75->Name = L"label75";
+			this->label75->Size = System::Drawing::Size(9, 13);
+			this->label75->TabIndex = 109;
+			this->label75->Text = L"|";
+			// 
+			// label76
+			// 
+			this->label76->AutoSize = true;
+			this->label76->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label76->Location = System::Drawing::Point(954, 199);
+			this->label76->Name = L"label76";
+			this->label76->Size = System::Drawing::Size(9, 13);
+			this->label76->TabIndex = 108;
+			this->label76->Text = L"|";
+			// 
+			// label77
+			// 
+			this->label77->AutoSize = true;
+			this->label77->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label77->Location = System::Drawing::Point(954, 186);
+			this->label77->Name = L"label77";
+			this->label77->Size = System::Drawing::Size(9, 13);
+			this->label77->TabIndex = 107;
+			this->label77->Text = L"|";
+			// 
+			// label78
+			// 
+			this->label78->AutoSize = true;
+			this->label78->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label78->Location = System::Drawing::Point(954, 172);
+			this->label78->Name = L"label78";
+			this->label78->Size = System::Drawing::Size(9, 13);
+			this->label78->TabIndex = 106;
+			this->label78->Text = L"|";
+			// 
+			// label79
+			// 
+			this->label79->AutoSize = true;
+			this->label79->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label79->Location = System::Drawing::Point(954, 159);
+			this->label79->Name = L"label79";
+			this->label79->Size = System::Drawing::Size(9, 13);
+			this->label79->TabIndex = 105;
+			this->label79->Text = L"|";
+			// 
+			// label80
+			// 
+			this->label80->AutoSize = true;
+			this->label80->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label80->Location = System::Drawing::Point(954, 300);
+			this->label80->Name = L"label80";
+			this->label80->Size = System::Drawing::Size(9, 13);
+			this->label80->TabIndex = 116;
+			this->label80->Text = L"|";
+			// 
+			// label81
+			// 
+			this->label81->AutoSize = true;
+			this->label81->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label81->Location = System::Drawing::Point(954, 287);
+			this->label81->Name = L"label81";
+			this->label81->Size = System::Drawing::Size(9, 13);
+			this->label81->TabIndex = 115;
+			this->label81->Text = L"|";
+			// 
+			// label82
+			// 
+			this->label82->AutoSize = true;
+			this->label82->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label82->Location = System::Drawing::Point(954, 276);
+			this->label82->Name = L"label82";
+			this->label82->Size = System::Drawing::Size(9, 13);
+			this->label82->TabIndex = 114;
+			this->label82->Text = L"|";
+			// 
+			// label83
+			// 
+			this->label83->AutoSize = true;
+			this->label83->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label83->Location = System::Drawing::Point(954, 263);
+			this->label83->Name = L"label83";
+			this->label83->Size = System::Drawing::Size(9, 13);
+			this->label83->TabIndex = 113;
+			this->label83->Text = L"|";
+			// 
+			// label84
+			// 
+			this->label84->AutoSize = true;
+			this->label84->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label84->Location = System::Drawing::Point(954, 249);
+			this->label84->Name = L"label84";
+			this->label84->Size = System::Drawing::Size(9, 13);
+			this->label84->TabIndex = 112;
+			this->label84->Text = L"|";
+			// 
+			// label85
+			// 
+			this->label85->AutoSize = true;
+			this->label85->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label85->Location = System::Drawing::Point(954, 236);
+			this->label85->Name = L"label85";
+			this->label85->Size = System::Drawing::Size(9, 13);
+			this->label85->TabIndex = 111;
+			this->label85->Text = L"|";
+			// 
+			// label87
+			// 
+			this->label87->AutoSize = true;
+			this->label87->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label87->Location = System::Drawing::Point(954, 325);
+			this->label87->Name = L"label87";
+			this->label87->Size = System::Drawing::Size(9, 13);
+			this->label87->TabIndex = 118;
+			this->label87->Text = L"|";
+			// 
+			// label88
+			// 
+			this->label88->AutoSize = true;
+			this->label88->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label88->Location = System::Drawing::Point(954, 311);
+			this->label88->Name = L"label88";
+			this->label88->Size = System::Drawing::Size(9, 13);
+			this->label88->TabIndex = 117;
+			this->label88->Text = L"|";
+			// 
+			// label86
+			// 
+			this->label86->AutoSize = true;
+			this->label86->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->label86->Location = System::Drawing::Point(996, 27);
+			this->label86->Name = L"label86";
+			this->label86->Size = System::Drawing::Size(54, 13);
+			this->label86->TabIndex = 119;
+			this->label86->Text = L"EnemyHP";
 			// 
 			// Main
 			// 
@@ -1183,8 +1527,36 @@ private: System::Windows::Forms::Label^  label62;
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
 				static_cast<System::Int32>(static_cast<System::Byte>(64)));
-			this->ClientSize = System::Drawing::Size(942, 346);
+			this->ClientSize = System::Drawing::Size(1089, 346);
+			this->Controls->Add(this->label86);
+			this->Controls->Add(this->label87);
+			this->Controls->Add(this->label88);
+			this->Controls->Add(this->label80);
+			this->Controls->Add(this->label81);
+			this->Controls->Add(this->label82);
+			this->Controls->Add(this->label83);
+			this->Controls->Add(this->label84);
+			this->Controls->Add(this->label85);
+			this->Controls->Add(this->label74);
+			this->Controls->Add(this->label75);
+			this->Controls->Add(this->label76);
+			this->Controls->Add(this->label77);
+			this->Controls->Add(this->label78);
+			this->Controls->Add(this->label79);
+			this->Controls->Add(this->label68);
+			this->Controls->Add(this->label69);
+			this->Controls->Add(this->label70);
+			this->Controls->Add(this->label71);
+			this->Controls->Add(this->label72);
+			this->Controls->Add(this->label73);
+			this->Controls->Add(this->label66);
+			this->Controls->Add(this->label67);
+			this->Controls->Add(this->label64);
+			this->Controls->Add(this->label65);
+			this->Controls->Add(this->label63);
 			this->Controls->Add(this->label62);
+			this->Controls->Add(this->richTextBox4);
+			this->Controls->Add(this->textBox6);
 			this->Controls->Add(this->label61);
 			this->Controls->Add(this->checkBox5);
 			this->Controls->Add(this->textBox5);
@@ -1299,7 +1671,16 @@ private: System::Windows::Forms::Label^  label62;
 				}
 				
 			}
-		
+			
+				
+				richTextBox4->Text = gcnew String(HpVals.c_str());
+			
+			
+	
+				
+			
+			
+
 			bombtimerbox->Text = bombtimer.ToString();
 			richTextBox2->Text = (bombtimer - 10).ToString();
 			richTextBox3->Text = (bombtimer - 5).ToString();
@@ -1370,13 +1751,14 @@ private: System::Void button1_Click_1(System::Object^  sender, System::EventArgs
 		this->trig->BackColor = Color::White;
 		this->espbtn->BackColor = Color::White;
 		this->btnlag->BackColor = Color::White;
+		this->button3->BackColor = Color::White; //aimbot
 		triggerbool = false;
 		flashbool = false;
 		mapbool = false;
 		forgivmaster = false;
 		espbool = false;
 		fakelagbool = false;
-
+		aimbotbool = false;
 	}
 	else
 	{
@@ -1386,13 +1768,14 @@ private: System::Void button1_Click_1(System::Object^  sender, System::EventArgs
 		this->trig->BackColor = Color::Green;
 		this->espbtn->BackColor = Color::Green;
 		this->btnlag->BackColor = Color::Green;
-	
+		this->button3->BackColor = Color::Green; //aimbot
 		forgivmaster = true;
 		triggerbool = true;
 		flashbool = true;
 		mapbool = true;
 		espbool = true;
 		fakelagbool = true;
+		aimbotbool = true;
 	}
 }
 private: System::Void button1_Click_2(System::Object^  sender, System::EventArgs^  e) {
@@ -1601,6 +1984,19 @@ private: System::Void checkBox5_CheckedChanged(System::Object^  sender, System::
 		shootonhead = true;
 	}
 }
+private: System::Void textBox6_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	aimbotSnap = Convert::ToInt32(textBox6->Text);
+}
+private: System::Void richTextBox4_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void label65_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void label66_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void label64_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void label67_Click(System::Object^  sender, System::EventArgs^  e) {
+}
 };
 }
 class Offsets 
@@ -1766,7 +2162,7 @@ public:
 		while (__dwordVGui == 0x0) __dwordVGui = GetModuleNamePointer((LPSTR)test3.c_str(), __gameProcess.th32ProcessID);
 		if (__HWNDCss = FindWindow(NULL, (LPSTR)test5.c_str()))
 		{
-			OutputDebugStringW(L"My output string.");
+			//OutputDebugStringW(L"My output string.");
 		}//change for game 
 		
 	}

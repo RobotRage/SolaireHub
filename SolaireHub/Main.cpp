@@ -24,7 +24,8 @@
 #include <string>
 #include "Entity.h"
 #include "cmath"
-
+#include "vector"
+int crosshairid;
 using namespace System;
 using namespace System::Windows::Forms;
 [STAThread]
@@ -140,8 +141,10 @@ DWORD getPlayer()
 {
 	D3DXVECTOR3 w2sHead;
 	DWORD plrToAim = NULL;
-	double lowestDist = 50;
+	double lowestDist = aimbotdist;
 
+	HPVector.clear();
+	
 	for (int i = 1; i <= 32; i++)
 	{
 	DWORD Entity;
@@ -150,15 +153,21 @@ DWORD getPlayer()
 	DWORD GlowObject = 0;
 	DWORD localteam;
 	DWORD base;
-
+	
+	DWORD TargetTeam;
+	int hpTemp;
 	ReadProcessMemory(fProcess.__HandleProcess, (BYTE*)(fProcess.__dwordClient + hazedumper::signatures::dwEntityList + (i * 0x10)), &base, sizeof(base), NULL);
 	WorldToScreen(getbone(base), w2sHead, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CXSCREEN));
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(PlayerBase + 0xF4), &localteam, sizeof(localteam), NULL);
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(base + 0x8), &ClassID, sizeof(int), NULL);
+
+		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(base + 0xF4), &TargetTeam, sizeof(int), NULL);
+
+
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(ClassID + 0x8), &ClassID, sizeof(int), NULL);
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(ClassID + 0x1), &ClassID, sizeof(int), NULL);
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(ClassID + 0x14), &ClassID, sizeof(int), NULL);
-		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(Entity + m_iTeamNum), &TeamNum, sizeof(int), NULL);// Getting the entitys Team Number
+		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(Entity + 0xF4), &TeamNum, sizeof(int), NULL);// Getting the entitys Team Number
 
 		double dist = sqrt(pow((GetSystemMetrics(SM_CXSCREEN) / 2) - w2sHead.x, 2) + pow((GetSystemMetrics(SM_CXSCREEN) / 2) - w2sHead.y, 2));
 		bool valid;
@@ -166,8 +175,14 @@ DWORD getPlayer()
 
 		DWORD hp;
 		ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(base + hazedumper::netvars::m_iHealth), &hp, sizeof(hp), NULL);
-
-		if (dist < lowestDist && ClassID == 40 && TeamNum != localteam && hp > 0)
+		/*
+		if (ClassID == 40 && TargetTeam != localteam && hp > 0)
+		{			
+			HpVals += std::to_string((static_cast<int>(hp))) + "\n";	
+			
+		}
+		*/
+		if (dist < lowestDist && ClassID == 40 && TargetTeam != localteam && hp > 0)
 		{
 			lowestDist = dist;
 			plrToAim = base;
@@ -199,8 +214,9 @@ void MouseMove(int x, int y)
 	INPUT Input = { 0 };
 	Input.type = INPUT_MOUSE;
 	Input.mi.dwFlags = MOUSEEVENTF_MOVE;
-	Input.mi.dx = x;
-	Input.mi.dy = y;
+	Input.mi.dx = x * aimbotSnap;
+	Input.mi.dy = y * aimbotSnap;
+	int a = aimbotSnap;
 	::SendInput(1, &Input, sizeof(INPUT));
 }
 
@@ -216,28 +232,39 @@ void aimbot(DWORD playerToAimAt)
 		int y = w2sHead.y;
 	if (spotted(playerToAimAt) == 1)
 	{
-		//aimbotdist++;
+		
 			//if (headX > -aimbotdist && headX <aimbotdist && headY > -aimbotdist && headY < aimbotdist)
-		//	{
+			//{
 				// mouse_event(0, headX, headY, 0, 0);
 				MouseMove(headX, headY);
 
 				//SetCursorPos(headX, headY);
-		//	}
+			//}
 			POINT mouse;
 			GetCursorPos(&mouse);
 		if (shootonhead)
 		{
 			if (mouse.x > (x - 5) && mouse.x < (x + 5))
 			{
-				shoot();
-				Sleep(10);
+				if (crosshairid > 0)
+				{
+					shoot();
+				}
+				//Sleep(10);
 			}
 		}
 		}
 	}
 }
-
+void blockMouse()
+{
+	INPUT Input = { 0 };
+	Input.type = INPUT_MOUSE;
+	Input.mi.dwFlags = MOUSEEVENTF_MOVE;
+	Input.mi.dx = 90;
+	Input.mi.dy = 90;
+	::SendInput(1, &Input, sizeof(INPUT));
+}
 void trigger()
 {
 	fProcess.RunProcess();
@@ -247,8 +274,12 @@ void trigger()
 	DWORD m_bSpotted = 0x93D;
 	BYTE JNE[] = { 0x75 };
 
-		int crosshairid;
+		
 		DWORD target;
+		DWORD hpEn;
+		DWORD hpR;
+		DWORD CID;
+
 		int localteam;
 		int targetteam;
 		float flash = 000;
@@ -257,8 +288,9 @@ void trigger()
 		bool radar = true;
 		int m_jumpflags;
 
-		//EntityList = __dwordClient.dwBase + dwEntityList;
-		EntityList = 0x4CE34DC;
+		EntityList = __dwordClient.dwBase + dwEntityList;
+
+		//EntityList = 0x4CE34DC;
 
 			
 		
@@ -270,6 +302,32 @@ void trigger()
 			ReadProcessMemory(fProcess.__HandleProcess, (BYTE*)(fProcess.__dwordClient + dwEntityList + (crosshairid -1) * 0x10), &target, sizeof(target), NULL);
 			ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(target + 0xF4), &targetteam, sizeof(targetteam), NULL);
 			//WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(PlayerBase + m_flFlashMaxAlpha), &flash, sizeof(0.0f), NULL);
+
+			HpVals = "";
+			for (int i = 0; i < 64; i ++)
+			{
+				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(fProcess.__dwordClient + hazedumper::signatures::dwGlowObjectManager), &hpEn, sizeof(int), NULL);
+				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0x38 * i), &hpEn, sizeof(int), NULL);
+
+				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0x8), &CID, sizeof(int), NULL);
+				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x8), &CID, sizeof(int), NULL);
+				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x1), &CID, sizeof(int), NULL);
+				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x14), &CID, sizeof(int), NULL);
+
+				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + hazedumper::netvars::m_iHealth), &hpR, sizeof(hpR), NULL);
+
+				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0xF4), &target, sizeof(int), NULL);
+
+				if (CID == 40 && target != localteam && hpR > 0)
+				{
+					HpVals += std::to_string((static_cast<int>(hpR))) + "\n";
+
+				}
+
+			}
+			
+
+
 			if (aimbotbool)
 			{
 				aimbot(getPlayer());
@@ -339,7 +397,7 @@ void trigger()
 
 
 
-				for (int i = 0; i <= 100; i++)
+				for (int i = 0; i <= 64; i++)
 				{
 					//std::cout << "ss" << std::endl;
 					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(fProcess.__dwordClient + m_dwLocalPlayer), &LocalPlayer, sizeof(int), NULL); // Gets LocalPlayer
@@ -423,17 +481,24 @@ void trigger()
 			}
 
 			}
+			BlockInput(false);
 
 			if (crosshairid > 0 )
 			{
 				if (targetteam != localteam )
 				{
+
 					if (triggerbool)
-					{	
+					{
 						Sleep(triggedelay);
 
 						shoot();
-					}					
-				}				
+					}
+				}
+				else
+				{
+				//	BlockInput(true);
+				//	blockMouse();
+				}
 			}		
 }
