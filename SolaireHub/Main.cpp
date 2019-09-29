@@ -25,6 +25,10 @@
 #include "Entity.h"
 #include "cmath"
 #include "vector"
+#include <cstdio>
+#include <ctime>
+#include <chrono>
+
 int crosshairid;
 using namespace System;
 using namespace System::Windows::Forms;
@@ -58,24 +62,36 @@ DWORD sds = hazedumper::netvars::m_Collision;
 typedef struct {
 	float Matrix[3][4];
 } Matrix3x4_t;
+
+typedef std::chrono::high_resolution_clock Clock;
+
+std::chrono::steady_clock::time_point tend;
+std::chrono::steady_clock::time_point tstart;
 void shoot()
 {
-	System::Windows::Forms::Application::DoEvents();
-	//Sleep(3);
-	INPUT Input = { 0 };
+	
+	if (std::chrono::duration_cast<std::chrono::milliseconds>(tend - tstart).count() >= triggedelay)
+	{
+		tstart = Clock::now();
 
-	Input.type = INPUT_MOUSE;
+		System::Windows::Forms::Application::DoEvents();
+		INPUT Input = { 0 };
 
-	Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-	::SendInput(1, &Input, sizeof(INPUT));
+		Input.type = INPUT_MOUSE;
 
-	//Sleep(1);
+		Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+		::SendInput(1, &Input, sizeof(INPUT));
 
-	Input.type = INPUT_MOUSE;
-	Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-	::SendInput(1, &Input, sizeof(INPUT));
 
+		Input.type = INPUT_MOUSE;
+		Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+		::SendInput(1, &Input, sizeof(INPUT));
+	}
+
+
+	tend = Clock::now();
 }
+
 CHackProcess fProcess;
 CHackProcess __dwordClient;
 float fov = 10.0;
@@ -303,28 +319,7 @@ void trigger()
 			ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(target + 0xF4), &targetteam, sizeof(targetteam), NULL);
 			//WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(PlayerBase + m_flFlashMaxAlpha), &flash, sizeof(0.0f), NULL);
 
-			HpVals = "";
-			for (int i = 0; i < 64; i ++)
-			{
-				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(fProcess.__dwordClient + hazedumper::signatures::dwGlowObjectManager), &hpEn, sizeof(int), NULL);
-				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0x38 * i), &hpEn, sizeof(int), NULL);
-
-				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0x8), &CID, sizeof(int), NULL);
-				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x8), &CID, sizeof(int), NULL);
-				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x1), &CID, sizeof(int), NULL);
-				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x14), &CID, sizeof(int), NULL);
-
-				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + hazedumper::netvars::m_iHealth), &hpR, sizeof(hpR), NULL);
-
-				ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0xF4), &target, sizeof(int), NULL);
-
-				if (CID == 40 && target != localteam && hpR > 0)
-				{
-					HpVals += std::to_string((static_cast<int>(hpR))) + "\n";
-
-				}
-
-			}
+			
 			
 
 
@@ -335,8 +330,7 @@ void trigger()
 
 			if (flashbool)
 			{
-				WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(PlayerBase + m_flFlashMaxAlpha), &flash, sizeof(0.0f), NULL);
-				
+				WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(PlayerBase + m_flFlashMaxAlpha), &flash, sizeof(0.0f), NULL);			
 			}
 			//dwbSendPackets
 			if (thirdp)
@@ -395,10 +389,27 @@ void trigger()
 
 			EntGlow.red = 1.f; EntGlow.green = 0.f; EntGlow.blue = 0.f; EntGlow.alpha = 1.f;
 
-
+			HpVals = "";
 
 				for (int i = 0; i <= 64; i++)
 				{
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(fProcess.__dwordClient + hazedumper::signatures::dwGlowObjectManager), &hpEn, sizeof(int), NULL);
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0x38 * i), &hpEn, sizeof(int), NULL);
+
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0x8), &CID, sizeof(int), NULL);
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x8), &CID, sizeof(int), NULL);
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x1), &CID, sizeof(int), NULL);
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(CID + 0x14), &CID, sizeof(int), NULL);
+
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + hazedumper::netvars::m_iHealth), &hpR, sizeof(hpR), NULL);
+
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(hpEn + 0xF4), &target, sizeof(int), NULL);
+
+					if (CID == 40 && target != localteam && hpR > 0)
+					{
+						HpVals += std::to_string((static_cast<int>(hpR))) + "\n";
+					}
+
 					//std::cout << "ss" << std::endl;
 					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(fProcess.__dwordClient + m_dwLocalPlayer), &LocalPlayer, sizeof(int), NULL); // Gets LocalPlayer
 					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(LocalPlayer + m_iTeamNum), &LocalTeam, sizeof(int), NULL);
@@ -410,7 +421,26 @@ void trigger()
 					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(ClassID + 0x14), &ClassID, sizeof(int), NULL);
 					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(Entity + m_iTeamNum), &TeamNum, sizeof(int), NULL);// Getting the entitys Team Number
 					std::cout << ClassID << std::endl;
-									
+						
+					DWORD TeamNumchams;
+					ReadProcessMemory(fProcess.__HandleProcess, (LPVOID)((DWORD)fProcess.__dwordClient + EntityList + ((i - 1) * 16)), &entitylist, sizeof(DWORD), NULL);
+					ReadProcessMemory(fProcess.__HandleProcess, (PBYTE*)(entitylist + m_iTeamNum), &TeamNumchams, sizeof(int), NULL);// Getting the entitys Team Number
+					byte Red[4] = { 255, 0, 0, 255 };
+					byte Green[4] = { 0, 255, 0, 255 };
+
+					if (LocalTeam != TeamNumchams)
+					{
+						WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)((entitylist)+0x70), &Red, sizeof(Red), NULL);
+					}
+					else
+					{
+						WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)((entitylist)+0x70), &Green, sizeof(Green), NULL);
+					}
+
+					if (mapbool)
+					{
+						WriteProcessMemory(fProcess.__HandleProcess, (LPVOID)(entitylist + m_bSpotted), &newval, sizeof(bool), NULL);
+					}
 					if (chicken)
 					{
 						if (ClassID == 36)
@@ -421,12 +451,15 @@ void trigger()
 
 					if (espbool)
 					{
+
 						if (ClassID == 40)
 						{
 							if (LocalTeam != TeamNum)
 							{
+
 								Sleep(espdelay);
 								WriteProcessMemory(fProcess.__HandleProcess, (PBYTE*)(GlowObject + 0x38 * i + 0x4), &EntGlow, sizeof(EntGlow), NULL);
+
 							}
 						
 						}
@@ -461,26 +494,8 @@ void trigger()
 						starttimer = true;
 					}
 				}
-			
+		
 
-			if (mapbool)
-			{
-
-			
-			for (int i = 0; i <= 64; i++)
-			{
-				
-				ReadProcessMemory(fProcess.__HandleProcess, (LPVOID)((DWORD)fProcess.__dwordClient + EntityList + ((i-1) * 16)), &entitylist, sizeof(DWORD), NULL);
-
-				if (entitylist == NULL)
-				{
-					continue;
-				}
-				WriteProcessMemory(fProcess.__HandleProcess, (LPVOID)(entitylist + m_bSpotted), &newval, sizeof(bool), NULL);
-				Sleep(espdelay);
-			}
-
-			}
 			BlockInput(false);
 
 			if (crosshairid > 0 )
@@ -490,8 +505,7 @@ void trigger()
 
 					if (triggerbool)
 					{
-						Sleep(triggedelay);
-
+						
 						shoot();
 					}
 				}

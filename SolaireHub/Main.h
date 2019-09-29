@@ -2137,7 +2137,6 @@ public:
 		AdjustTokenPrivileges(__HandleToken, false, &priv, 0, 0, 0);
 		CloseHandle(__HandleToken);
 		CloseHandle(__HandleProcess);
-
 	}
 
 	void RunProcess()
