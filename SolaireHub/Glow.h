@@ -8,16 +8,16 @@ Offsets::GlowStruct2 nothin; // GlowStruct
 
 struct GlowStruct
 {
-	DWORD pEntity;
+//	DWORD pEntity;
 	float r;
 	float g;
 	float b;
 	float a;
-	char unk1[16];
-	bool m_bRenderWhenOccluded;
-	bool m_bRenderWhenUnoccluded;
-	bool m_bFullBloom;
-	char unk2[17];
+//	char unk1[16];
+//	bool m_bRenderWhenOccluded;
+//	bool m_bRenderWhenUnoccluded;
+//	bool m_bFullBloom;
+//	char unk2[17];
 };
 
 namespace Glow
