@@ -287,7 +287,7 @@ void aimbot(DWORD playerToAimAt)
 	{
 		POINT mouse;
 		GetCursorPos(&mouse);
-		MouseMove(mouse.x -1, mouse.y);
+		//MouseMove(mouse.x -1, mouse.y);
 	}
 }
 void blockMouse()
